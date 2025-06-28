@@ -4,8 +4,8 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
-import { generateContent } from './gemini';
-import { callZoteroApi } from './zotero';
+import { generateContent } from './gemini.js';
+import { callZoteroApi } from './zotero.js';
 
 interface ZoteroQuickPickItem extends vscode.QuickPickItem {
     item: any; // To store the full Zotero item
@@ -252,8 +252,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         // Create temporary files for diff view
-        const originalUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'original.txt')}`);
-        const improvedUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'improved.txt')}`);
+        const originalUri = vscode.Uri.file(path.join(os.tmpdir(), 'original.txt'));
+        const improvedUri = vscode.Uri.file(path.join(os.tmpdir(), 'improved.txt'));
 
         await vscode.workspace.fs.writeFile(originalUri, Buffer.from(selectedText, 'utf8'));
         await vscode.workspace.fs.writeFile(improvedUri, Buffer.from(improvedText, 'utf8'));
