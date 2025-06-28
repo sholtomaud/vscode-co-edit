@@ -14,13 +14,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:co-edit.draftChapterPlan",
-    "onCommand:co-edit.checkSectionAgainstPlan",
-    "onCommand:co-edit.findRelevantCitations",
-    "onCommand:co-edit.improveParagraph",
-    "onCommand:co-edit.setGeminiApiKey"
-  ],
+  
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
