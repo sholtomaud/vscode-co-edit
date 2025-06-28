@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
-import { generateContent, generateStructuredComments } from './gemini.js';
+import { generateContent } from './gemini.js';
 import { callZoteroApi } from './zotero.js';
 
 interface ZoteroQuickPickItem extends vscode.QuickPickItem {
@@ -295,74 +295,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(setApiKeyDisposable);
 
 	const generateCommentsDisposable = vscode.commands.registerCommand('co-edit.generateComments', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor found.');
-			return;
-		}
-
-		const document = editor.document;
-		const documentContent = document.getText();
-
-		vscode.window.showInformationMessage('Generating comments...');
-
-		// For now, we'll just pass the document content.
-		// Later, we'll also pass plan.md and GEMINI.md content.
-		const comments = await generateStructuredComments(context.secrets, documentContent);
-
-		if (!comments) {
-			vscode.window.showErrorMessage('Failed to generate comments.');
-			return;
-		}
-
-		const panel = vscode.window.createWebviewPanel(
-			'geminiComments', // Identifies the type of the webview. Used internally
-			'Gemini Comments', // Title of the panel displayed to the user
-			vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
-			{
-				enableScripts: true // Enable scripts in the webview
-			}
-		);
-
-		// Set the HTML content for the webview
-		panel.webview.html = getWebviewContent(comments);
+		vscode.window.showInformationMessage('Generate Comments command executed!');
 	});
 
 	context.subscriptions.push(generateCommentsDisposable);
-}
-
-function getWebviewContent(comments: any[]) {
-	let commentsHtml = '';
-	if (comments && comments.length > 0) {
-		commentsHtml = comments.map(comment => `
-			<div class="comment-item">
-				<h3>${comment.comment_type}</h3>
-				<p>${comment.comment_content}</p>
-				<p><strong>Justification:</strong> ${comment.justification}</p>
-				${comment.suggested_fix ? `<p><strong>Suggested Fix:</strong> ${comment.suggested_fix}</p>` : ''}
-			</div>
-		`).join('');
-	} else {
-		commentsHtml = '<p>No comments generated.</p>';
-	}
-
-	return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Comments</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .comment-item { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        h3 { margin-top: 0; }
-    </style>
-</head>
-<body>
-    <h1>Gemini Comments</h1>
-    ${commentsHtml}
-</body>
-</html>`;
 }
 
 // This method is called when your extension is deactivated
