@@ -50,6 +50,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	const checkSectionDisposable = vscode.commands.registerCommand('co-pilot.checkSectionAgainstPlan', () => {
+		vscode.window.showInformationMessage('Check Section Against Plan command executed!');
+	});
+
+	context.subscriptions.push(checkSectionDisposable);
 }
 
 // This method is called when your extension is deactivated
