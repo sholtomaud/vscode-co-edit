@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { exec } from 'child_process';
 import * as fs from 'fs';
+import * as os from 'os';
 import { callZoteroApi } from './zotero';
 
 // This method is called when your extension is activated
@@ -244,9 +245,24 @@ export function activate(context: vscode.ExtensionContext) {
             if (stderr) {
                 console.error(`Gemini CLI stderr: ${stderr}`);
             }
-            vscode.window.showInformationMessage(`Improved paragraph: ${stdout.substring(0, 100)}...`);
-            // The next task (5.4) will handle displaying the diff
-        });
+
+            const improvedText = stdout.trim();
+
+            if (!improvedText) {
+                vscode.window.showInformationMessage('Gemini did not return an improved paragraph.');
+                return;
+            }
+
+            // Create temporary files for diff view
+            const originalUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'original.txt')}`);
+            const improvedUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'improved.txt')}`);
+
+            await vscode.workspace.fs.writeFile(originalUri, Buffer.from(selectedText, 'utf8'));
+            await vscode.workspace.fs.writeFile(improvedUri, Buffer.from(improvedText, 'utf8'));
+
+            await vscode.commands.executeCommand('vscode.diff', originalUri, improvedUri, 'Original vs. Improved Paragraph');
+
+            vscode.window.showInformationMessage('Improved paragraph displayed in diff view.');
 	});
 
 	context.subscriptions.push(improveParagraphDisposable);
