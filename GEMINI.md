@@ -95,6 +95,10 @@ This section outlines the expected Git workflow for all development tasks, empha
 - After completing a task, committing changes locally, and ensuring local verification passes, push the feature branch to the remote GitHub repository.
 - Once the PR is approved and merged, delete the feature branch from the remote.
 
+### 4.7. Git Synchronization Strategy
+- **For `main` branch**: After a Pull Request is merged, always ensure your local `main` branch is up-to-date by running `git checkout main && git pull origin main`.
+- **For feature branches**: When incorporating recent changes from `main` into your active feature branch, use `git pull --rebase origin main` to maintain a clean, linear history before merging into `main`.
+
 ## 5. Model Context Protocol (MCP) Implementation
 
 - The primary purpose of this extension is to expose workspace context to a language model.
