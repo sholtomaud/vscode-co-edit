@@ -1,5 +1,5 @@
 {
-  "name": "vscode-co-edit",
+  "extensionId": "co-edit",
   "displayName": "vscode-co-edit",
   "description": "An AI academic writing co-pilot for VSCode.",
   "version": "0.0.1",
