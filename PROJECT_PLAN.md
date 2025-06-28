@@ -15,6 +15,11 @@ This document outlines the development plan for the VSCode extension. It will be
 - [ ] **Task 2.2:** Implement secure handling of the Gemini API key using `vscode.SecretStorage`.
 - [ ] **Task 2.3:** Create a `src/gemini.ts` module to encapsulate Gemini API interactions. This module should handle prompt construction and calling the Gemini SDK.
 
+### Epic 2: AI Integration (Gemini SDK)
+- [ ] **Task 2.1:** Install the Google Gemini SDK for Node.js.
+- [ ] **Task 2.2:** Implement secure handling of the Gemini API key using `vscode.SecretStorage`.
+- [ ] **Task 2.3:** Create a `src/gemini.ts` module to encapsulate Gemini API interactions. This module should handle prompt construction and calling the Gemini SDK.
+
 ### Epic 3: Workflow 0 - Draft Chapter Plan
 - [x] **Task 3.1:** Implement the `co-pilot.draftChapterPlan` command and register it in `package.json`.
 - [x] **Task 3.2:** The command should correctly identify the active chapter directory.
@@ -31,7 +36,7 @@ This document outlines the development plan for the VSCode extension. It will be
 
 ### Epic 5: Workflow 2 - AI-Powered Citation
 - [x] **Task 5.1:** Implement the `co-pilot.findRelevantCitations` command.
-- [ ] **Task 5.2:** The command should send the current paragraph to the Gemini API client for keyword extraction.
+- [ ] **Task 4.2:** The command should send the current paragraph to the Gemini API client for keyword extraction.
 - [x] **Task 5.3:** Implement a function to connect to the Zotero Better BibTeX JSON-RPC endpoint using the native Node.js `http` module.
 - [x] **Task 5.4:** The command should search Zotero based on the keywords from the AI.
 - [x] **Task 5.5:** The command should display the search results in a VSCode Quick Pick list.
