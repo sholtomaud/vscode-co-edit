@@ -218,7 +218,20 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(findCitationsDisposable);
 
 	const improveParagraphDisposable = vscode.commands.registerCommand('co-pilot.improveParagraph', () => {
-		vscode.window.showInformationMessage('Improve Paragraph command executed!');
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor found.');
+			return;
+		}
+
+		const selection = editor.selection;
+		if (selection.isEmpty) {
+			vscode.window.showInformationMessage('No text selected. Please select a paragraph to improve.');
+			return;
+		}
+
+		const selectedText = editor.document.getText(selection);
+		vscode.window.showInformationMessage(`Selected text (first 100 chars): ${selectedText.substring(0, 100)}...`);
 	});
 
 	context.subscriptions.push(improveParagraphDisposable);
