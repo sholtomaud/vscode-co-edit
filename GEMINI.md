@@ -58,7 +58,39 @@ This document outlines the core principles, constraints, and development workflo
 - **Compiler**: Use the TypeScript compiler (`tsc`) to transpile TypeScript to JavaScript.
 - **Packager**: Use `@vscode/vsce` to package the extension into a `.vsix` file for distribution.
 
-## 4. Model Context Protocol (MCP) Implementation
+## 4. Git Workflow
+
+This section outlines the expected Git workflow for all development tasks, emphasizing best practices for collaboration and code quality.
+
+### 4.1. Task Management
+- All development work must be tied to a GitHub Issue.
+- Issues will be created based on the `PROJECT_PLAN.md` file.
+
+### 4.2. Local Verification
+- Before committing any changes, ensure all local tests pass by running `npm test`.
+- All code must adhere to the project's linting and formatting rules. Run `npm run lint` and `npm run format` and address any reported issues.
+
+### 4.3. Branching Strategy
+- All new work must be done on a dedicated feature branch.
+- Branch names should be descriptive and link to the relevant issue (e.g., `feat/issue-XXX-short-description`, `fix/issue-YYY-bug-fix`).
+- Never commit directly to the `main` branch.
+
+### 4.4. Commit Strategy
+- Each completed task (corresponding to a GitHub Issue) should result in a single, focused commit or a series of logically grouped commits.
+- Commit messages should be clear, concise, and follow the Conventional Commits specification (e.g., `feat: Add new feature (closes #123)`).
+- Ensure the commit message includes `(closes #<issue_number>)` to automatically close the associated GitHub Issue upon merging.
+
+### 4.5. Pull Requests (PRs)
+- All feature branches must be merged into `main` via a Pull Request.
+- PRs should have a clear title and description, referencing the GitHub Issue they address.
+- Automated tests (e.g., via GitHub Actions) will run on PRs to ensure code quality and functionality.
+- A PR must be reviewed and approved by at least one other developer before it can be merged.
+
+### 4.6. Remote Synchronization
+- After completing a task, committing changes locally, and ensuring local verification passes, push the feature branch to the remote GitHub repository.
+- Once the PR is approved and merged, delete the feature branch from the remote.
+
+## 5. Model Context Protocol (MCP) Implementation
 
 - The primary purpose of this extension is to expose workspace context to a language model.
 - The extension must register a main command, for example `mcp.getContext`, which can be invoked by an external process.
