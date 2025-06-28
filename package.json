@@ -26,7 +26,22 @@
         "command": "co-pilot.improveParagraph",
         "title": "Co-Pilot: Improve Paragraph"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Co-Pilot Configuration",
+      "properties": {
+        "co-pilot.zotero.endpoint": {
+          "type": "string",
+          "default": "http://localhost:23119/better-bibtex/json-rpc",
+          "description": "The URL of the Zotero Better BibTeX JSON-RPC endpoint."
+        },
+        "co-pilot.zotero.citationStyle": {
+          "type": "string",
+          "default": "apa",
+          "description": "The default citation style to use for inserting citations (e.g., 'apa', 'mla', 'chicago')."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
