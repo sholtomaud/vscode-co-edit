@@ -118,7 +118,10 @@ export function activate(context: vscode.ExtensionContext) {
             if (stderr) {
                 console.error(`Gemini CLI stderr: ${stderr}`);
             }
-            vscode.window.showInformationMessage(`Gemini review complete. Output: ${stdout.substring(0, 100)}...`);
+            vscode.window.showInformationMessage(`Gemini review complete. Check output for full feedback.`);
+            const outputChannel = vscode.window.createOutputChannel("Co-Pilot Gemini Review");
+            outputChannel.appendLine(stdout);
+            outputChannel.show();
         });
 	});
 
