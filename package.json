@@ -9,13 +9,15 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:co-pilot.draftChapterPlan"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "vscode-co-edit.helloWorld",
-        "title": "Hello World"
+        "command": "co-pilot.draftChapterPlan",
+        "title": "Co-Pilot: Draft Chapter Plan"
       }
     ]
   },
