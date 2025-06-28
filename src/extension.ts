@@ -52,7 +52,53 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	const checkSectionDisposable = vscode.commands.registerCommand('co-pilot.checkSectionAgainstPlan', () => {
-		vscode.window.showInformationMessage('Check Section Against Plan command executed!');
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor found.');
+			return;
+		}
+
+		const document = editor.document;
+		if (document.languageId !== 'latex') {
+			vscode.window.showErrorMessage('This command only works for LaTeX files.');
+			return;
+		}
+
+		let sectionContent = '';
+		const selection = editor.selection;
+
+		if (!selection.isEmpty) {
+			// If there's a selection, use it
+			sectionContent = document.getText(selection);
+		} else {
+			// If no selection, try to infer the current section
+			const cursorLine = editor.selection.active.line;
+			let startLine = 0;
+
+			// Find the start of the current section/subsection/chapter
+			for (let i = cursorLine; i >= 0; i--) {
+				const lineText = document.lineAt(i).text;
+				if (lineText.match(/\\(chapter|section|subsection|subsubsection){.*}/)) {
+					startLine = i;
+					break;
+				}
+			}
+
+			// Find the end of the current section/subsection/chapter or end of document
+			let endLine = document.lineCount - 1;
+			for (let i = cursorLine + 1; i < document.lineCount; i++) {
+				const lineText = document.lineAt(i).text;
+				if (lineText.match(/\\(chapter|section|subsection|subsubsection){.*}/)) {
+					endLine = i - 1;
+					break;
+				}
+			}
+
+			const range = new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).text.length);
+			sectionContent = document.getText(range);
+		}
+
+		vscode.window.showInformationMessage(`Extracted section content (first 100 chars): ${sectionContent.substring(0, 100)}...`);
 	});
 
 	context.subscriptions.push(checkSectionDisposable);
