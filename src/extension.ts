@@ -126,6 +126,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(checkSectionDisposable);
+
+	const findCitationsDisposable = vscode.commands.registerCommand('co-pilot.findRelevantCitations', () => {
+		vscode.window.showInformationMessage('Find Relevant Citations command executed!');
+	});
+
+	context.subscriptions.push(findCitationsDisposable);
 }
 
 // This method is called when your extension is deactivated
