@@ -180,8 +180,25 @@ export function activate(context: vscode.ExtensionContext) {
             try {
                 const zoteroResults = await callZoteroApi('item.search', [keywords]);
                 if (zoteroResults && zoteroResults.length > 0) {
-                    vscode.window.showInformationMessage(`Found ${zoteroResults.length} results in Zotero.`);
-                    // TODO: Display results in Quick Pick (Task 4.5)
+                    const quickPickItems = zoteroResults.map((item: any) => ({
+                        label: item.title || 'No Title',
+                        description: item.creators ? item.creators.map((c: any) => `${c.firstName} ${c.lastName}`).join(', ') : '',
+                        detail: item.date || '',
+                        item: item // Store the full item for later use
+                    }));
+
+                    const selectedItem = await vscode.window.showQuickPick(quickPickItems, {
+                        placeHolder: 'Select a citation to insert',
+                        matchOnDescription: true,
+                        matchOnDetail: true
+                    });
+
+                    if (selectedItem) {
+                        vscode.window.showInformationMessage(`Selected: ${selectedItem.label}`);
+                        // The next task (4.6) will handle inserting the citation
+                    } else {
+                        vscode.window.showInformationMessage('No citation selected.');
+                    }
                 } else {
                     vscode.window.showInformationMessage('No relevant citations found in Zotero.');
                 }
