@@ -293,6 +293,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(setApiKeyDisposable);
+
+	const generateCommentsDisposable = vscode.commands.registerCommand('co-edit.generateComments', async () => {
+		vscode.window.showInformationMessage('Generate Comments command executed!');
+	});
+
+	context.subscriptions.push(generateCommentsDisposable);
 }
 
 // This method is called when your extension is deactivated

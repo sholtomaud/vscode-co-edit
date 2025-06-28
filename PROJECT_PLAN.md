@@ -47,3 +47,11 @@ This document outlines the development plan for the VSCode extension. It will be
 - [x] **Task 7.1:** Add configuration settings in `package.json` for the Zotero endpoint URL and default citation style.
 - [x] **Task 7.2:** Implement robust error handling and user-facing notifications for all commands.
 - [x] **Task 7.3:** Write a comprehensive `README.md` explaining how to use the extension.
+
+### Epic 8: Workflow 4 - AI-Powered Commenting Panel
+- [x] **Task 8.1:** Implement the `co-edit.generateComments` command.
+- [ ] **Task 8.2:** Craft a Gemini prompt to generate structured comments (text range, type, content, optional suggested fix) in JSON format.
+- [ ] **Task 8.3:** Create a new VS Code Webview panel to display the generated comments.
+- [ ] **Task 8.4:** Implement communication between the extension backend and the Webview to send comments for display.
+- [ ] **Task 8.5:** Design and implement the Webview UI to clearly present comments.
+- [ ] **Task 8.6:** Integrate error handling for Gemini API calls and Webview interactions.
