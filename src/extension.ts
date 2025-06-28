@@ -216,6 +216,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(findCitationsDisposable);
+
+	const improveParagraphDisposable = vscode.commands.registerCommand('co-pilot.improveParagraph', () => {
+		vscode.window.showInformationMessage('Improve Paragraph command executed!');
+	});
+
+	context.subscriptions.push(improveParagraphDisposable);
 }
 
 // This method is called when your extension is deactivated

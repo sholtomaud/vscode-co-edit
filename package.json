@@ -12,7 +12,8 @@
   "activationEvents": [
     "onCommand:co-pilot.draftChapterPlan",
     "onCommand:co-pilot.checkSectionAgainstPlan",
-    "onCommand:co-pilot.findRelevantCitations"
+    "onCommand:co-pilot.findRelevantCitations",
+    "onCommand:co-pilot.improveParagraph"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -20,6 +21,10 @@
       {
         "command": "co-pilot.draftChapterPlan",
         "title": "Co-Pilot: Draft Chapter Plan"
+      },
+      {
+        "command": "co-pilot.improveParagraph",
+        "title": "Co-Pilot: Improve Paragraph"
       }
     ]
   },
