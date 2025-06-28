@@ -95,6 +95,42 @@ This section outlines the expected Git workflow for all development tasks, empha
 - After completing a task, committing changes locally, and ensuring local verification passes, push the feature branch to the remote GitHub repository.
 - Once the PR is approved and merged, delete the feature branch from the remote.
 
+### 4.7. Git Synchronization and Branch Management Strategy
+- **Starting a new task**:
+    - Always begin by ensuring your local `main` branch is up-to-date:
+        ```bash
+        git checkout main
+        git pull origin main
+        ```
+    - Then, create a new feature or fix branch from `main`:
+        ```bash
+        git checkout -b <branch-type>/issue-XXX-short-description
+        ```
+        (e.g., `feat/issue-34-chapter-plan-sdk`, `fix/issue-35-typo-fix`)
+- **Incorporating `main` changes into a feature branch**:
+    - If `main` has new changes while you are working on a feature branch, regularly rebase your feature branch onto `main` to keep it up-to-date and maintain a linear history:
+        ```bash
+        git fetch origin
+        git rebase origin/main
+        ```
+        (Resolve any conflicts that arise during the rebase.)
+- **After Pull Request (PR) merge**:
+    - Once your Pull Request has been approved and merged into `main` on GitHub:
+        - Switch back to your local `main` branch: `git checkout main`
+        - Pull the latest changes from the remote `main`: `git pull origin main`
+        - Delete your local feature branch: `git branch -d <merged-branch-name>`
+        - Delete the remote feature branch: `git push origin --delete <merged-branch-name>`
+
+## 6. Continuous Improvement of GEMINI.md
+
+The `GEMINI.md` is a living document designed to evolve with our project and best practices.
+
+- **Self-Correction**: If Gemini encounters a workflow issue, a lack of clarity in instructions, or identifies a more efficient or robust way to perform a task, it will:
+    1.  Propose the improvement to the user.
+    2.  Upon user approval, update the `GEMINI.md` file to incorporate the new best practice or clarification.
+    3.  Implement this update following the standard Git workflow (new branch, commit, PR).
+- **Proactive Enhancement**: Gemini will also proactively suggest improvements to the `GEMINI.md` (e.g., regarding task management, code standards, or project structure) if it identifies areas for optimization or better documentation.
+
 ### 4.7. Git Synchronization Strategy
 - **For `main` branch**: After a Pull Request is merged, always ensure your local `main` branch is up-to-date by running `git checkout main && git pull origin main`.
 - **For feature branches**: When incorporating recent changes from `main` into your active feature branch, use `git pull --rebase origin main` to maintain a clean, linear history before merging into `main`.
