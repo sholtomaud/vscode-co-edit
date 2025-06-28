@@ -14,7 +14,6 @@
   "categories": [
     "Other"
   ],
-  
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -52,9 +51,9 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint && npx @vscode/vsce package --no-dependencies",
-     "lint": "eslint src --ext ts",
-     "format": "prettier --write src/**/*.ts",
-     "test": "vscode-test"
+    "lint": "eslint src --ext ts",
+    "format": "prettier --write src/**/*.ts",
+    "test": "vscode-test"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -70,6 +69,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1"
+    "@google/genai": "^1.7.0"
   }
 }

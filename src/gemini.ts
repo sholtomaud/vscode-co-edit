@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import * as vscode from 'vscode';
 
 export async function generateContent(secretStorage: vscode.SecretStorage, prompt: string): Promise<string | undefined> {
@@ -9,13 +9,11 @@ export async function generateContent(secretStorage: vscode.SecretStorage, promp
         return undefined;
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+    const ai = new GoogleGenAI({apiKey: apiKey});
 
     try {
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const response = await ai.models.generateContent({ model: 'gemini-1.5-pro', contents: prompt });
+        const text = response.text;
         return text;
     } catch (error: any) {
         vscode.window.showErrorMessage(`Gemini API Error: ${error.message}`);
