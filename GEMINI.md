@@ -90,12 +90,7 @@ This section outlines the expected Git workflow for all development tasks, empha
 - **Reviewer Comments:** Periodically check for reviewer comments on open Pull Requests. If comments are present, address them by updating the code and pushing new commits to the branch.
 - **Merged PRs:** If a Pull Request has been merged, consider the task complete and proceed to the next task in the `PROJECT_PLAN.md`.
 
-
-### 4.6. Remote Synchronization
-- After completing a task, committing changes locally, and ensuring local verification passes, push the feature branch to the remote GitHub repository.
-- Once the PR is approved and merged, delete the feature branch from the remote.
-
-### 4.7. Git Synchronization and Branch Management Strategy
+### 4.6. Remote Synchronization and Branch Management Strategy
 - **Starting a new task**:
     - Always begin by ensuring your local `main` branch is up-to-date:
         ```bash
@@ -121,20 +116,6 @@ This section outlines the expected Git workflow for all development tasks, empha
         - Delete your local feature branch: `git branch -d <merged-branch-name>`
         - Delete the remote feature branch: `git push origin --delete <merged-branch-name>`
 
-## 6. Continuous Improvement of GEMINI.md
-
-The `GEMINI.md` is a living document designed to evolve with our project and best practices.
-
-- **Self-Correction**: If Gemini encounters a workflow issue, a lack of clarity in instructions, or identifies a more efficient or robust way to perform a task, it will:
-    1.  Propose the improvement to the user.
-    2.  Upon user approval, update the `GEMINI.md` file to incorporate the new best practice or clarification.
-    3.  Implement this update following the standard Git workflow (new branch, commit, PR).
-- **Proactive Enhancement**: Gemini will also proactively suggest improvements to the `GEMINI.md` (e.g., regarding task management, code standards, or project structure) if it identifies areas for optimization or better documentation.
-
-### 4.7. Git Synchronization Strategy
-- **For `main` branch**: After a Pull Request is merged, always ensure your local `main` branch is up-to-date by running `git checkout main && git pull origin main`.
-- **For feature branches**: When incorporating recent changes from `main` into your active feature branch, use `git pull --rebase origin main` to maintain a clean, linear history before merging into `main`.
-
 ## 5. Model Context Protocol (MCP) Implementation
 
 - The primary purpose of this extension is to expose workspace context to a language model.
@@ -145,3 +126,13 @@ The `GEMINI.md` is a living document designed to evolve with our project and bes
     - The project's file structure.
     - Information about the version control system (if available).
 - The gathered information must be structured into a clear, serializable JSON object to be returned as the result of the command invocation.
+
+## 6. Continuous Improvement of GEMINI.md
+
+The `GEMINI.md` is a living document designed to evolve with our project and best practices.
+
+- **Self-Correction**: If Gemini encounters a workflow issue, a lack of clarity in instructions, or identifies a more efficient or robust way to perform a task, it will:
+    1.  Propose the improvement to the user.
+    2.  Upon user approval, update the `GEMINI.md` file to incorporate the new best practice or clarification.
+    3.  Implement this update following the standard Git workflow (new branch, commit, PR).
+- **Proactive Enhancement**: Gemini will also proactively suggest improvements to the `GEMINI.md` (e.g., regarding task management, code standards, or project structure) if it identifies areas for optimization or better documentation.
