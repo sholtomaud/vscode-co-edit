@@ -127,8 +127,49 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(checkSectionDisposable);
 
-	const findCitationsDisposable = vscode.commands.registerCommand('co-pilot.findRelevantCitations', () => {
+	const findCitationsDisposable = vscode.commands.registerCommand('co-pilot.findRelevantCitations', async () => {
 		vscode.window.showInformationMessage('Find Relevant Citations command executed!');
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor found.');
+			return;
+		}
+
+		const document = editor.document;
+		const cursorLine = editor.selection.active.line;
+
+		let paragraphStartLine = cursorLine;
+		while (paragraphStartLine > 0 && document.lineAt(paragraphStartLine - 1).text.trim() !== '') {
+			paragraphStartLine--;
+		}
+
+		let paragraphEndLine = cursorLine;
+		while (paragraphEndLine < document.lineCount - 1 && document.lineAt(paragraphEndLine + 1).text.trim() !== '') {
+			paragraphEndLine++;
+		}
+
+		const paragraphRange = new vscode.Range(paragraphStartLine, 0, paragraphEndLine, document.lineAt(paragraphEndLine).text.length);
+		const paragraphContent = document.getText(paragraphRange);
+
+		if (paragraphContent.trim() === '') {
+			vscode.window.showInformationMessage('No paragraph found at cursor position.');
+			return;
+		}
+
+		const prompt = `Extract key concepts and keywords from the following text, suitable for searching a research paper database. Provide them as a comma-separated list. Do not include any other text or formatting.\n\nText:\n\`\`\`\n${paragraphContent}\n\`\`\``;
+
+		vscode.window.showInformationMessage('Extracting keywords from paragraph...');
+
+		exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
+			if (error) {
+				vscode.window.showErrorMessage(`Error extracting keywords: ${error.message}`);
+				return;
+			}
+			if (stderr) {
+				console.error(`Gemini CLI stderr: ${stderr}`);
+			}
+			vscode.window.showInformationMessage(`Extracted keywords: ${stdout}`);
+		});
 	});
 
 	context.subscriptions.push(findCitationsDisposable);
