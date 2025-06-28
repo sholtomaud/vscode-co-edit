@@ -44,7 +44,7 @@ This document outlines the development plan for the VSCode extension. It will be
 
 ### Epic 6: Workflow 3 - Collaborative Co-Editing
 - [x] **Task 6.1:** Implement the `co-pilot.improveParagraph` command.
-- [x] **Task 6.2:** The command should get the selected text from the editor.
+- [ ] **Task 5.2:** The command should get the selected text from the editor.
 - [ ] **Task 6.3:** The command should send the text to the Gemini API client for improvement.
 - [x] **Task 6.4:** The command should display the result in a `Diff` view, allowing the user to accept or reject the changes.
 
