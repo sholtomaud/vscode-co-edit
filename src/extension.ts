@@ -260,7 +260,19 @@ export function activate(context: vscode.ExtensionContext) {
 
         await vscode.commands.executeCommand('vscode.diff', originalUri, improvedUri, 'Original vs. Improved Paragraph');
 
-        vscode.window.showInformationMessage('Improved paragraph displayed in diff view.');
+        const choice = await vscode.window.showQuickPick(['Accept', 'Discard'], {
+            placeHolder: 'Accept or discard the improved paragraph?',
+            ignoreFocusOut: true
+        });
+
+        if (choice === 'Accept') {
+            editor.edit(editBuilder => {
+                editBuilder.replace(selection, improvedText);
+            });
+            vscode.window.showInformationMessage('Improved paragraph accepted.');
+        } else {
+            vscode.window.showInformationMessage('Improved paragraph discarded.');
+        }
 	});
 
 	context.subscriptions.push(improveParagraphDisposable);
