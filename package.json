@@ -29,6 +29,10 @@
       {
         "command": "co-edit.setGeminiApiKey",
         "title": "Co-Edit: Set Gemini API Key"
+      },
+      {
+        "command": "co-edit.generateComments",
+        "title": "Co-Edit: Generate Comments"
       }
     ],
     "configuration": {
