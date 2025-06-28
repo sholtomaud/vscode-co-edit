@@ -15,6 +15,7 @@
     "Other"
   ],
   "main": "./out/extension.js",
+  "type": "module",
   "contributes": {
     "commands": [
       {
@@ -50,7 +51,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint && npx @vscode/vsce package --no-dependencies",
+    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "format": "prettier --write src/**/*.ts",
     "test": "vscode-test"
