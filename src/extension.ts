@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const draftChapterPlanDisposable = vscode.commands.registerCommand('co-pilot.draftChapterPlan', async () => {
+	const draftChapterPlanDisposable = vscode.commands.registerCommand('co-edit.draftChapterPlan', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			vscode.window.showErrorMessage('No active editor found.');
@@ -61,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(draftChapterPlanDisposable);
 
-	const checkSectionDisposable = vscode.commands.registerCommand('co-pilot.checkSectionAgainstPlan', async () => {
+	const checkSectionDisposable = vscode.commands.registerCommand('co-edit.checkSectionAgainstPlan', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			vscode.window.showErrorMessage('No active editor found.');
@@ -126,7 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showWarningMessage(`Could not read chapter GEMINI.md: ${error.message}`);
 		}
 
-		const prompt = `You are an AI academic writing co-pilot. Your task is to review a LaTeX section against a provided plan and specific instructions.\n\nChapter Plan (from plan.md):\n\`\`\`markdown\n${planContent}\n\`\`\`\n\nChapter-Specific Instructions (from GEMINI.md, if any):\n\`\`\`markdown\n${chapterGeminiContent || 'No specific instructions provided.'}\n\`\`\`\n\nLaTeX Section to Review:\n\`\`\`latex\n${sectionContent}\n\`\`\`\n\nBased on the chapter plan and any specific instructions, please provide feedback on the LaTeX section. Focus on:\n- Adherence to the plan's structure and content.\n- Clarity, coherence, and academic rigor.\n- Suggestions for improvement or expansion.\n- Identification of areas where citations might be needed.\n\nProvide your feedback in a clear, concise, and actionable Markdown format.`;
+		const prompt = `You are an AI academic writing co-edit. Your task is to review a LaTeX section against a provided plan and specific instructions.\n\nChapter Plan (from plan.md):\n\`\`\`markdown\n${planContent}\n\`\`\`\n\nChapter-Specific Instructions (from GEMINI.md, if any):\n\`\`\`markdown\n${chapterGeminiContent || 'No specific instructions provided.'}\n\`\`\`\n\nLaTeX Section to Review:\n\`\`\`latex\n${sectionContent}\n\`\`\`\n\nBased on the chapter plan and any specific instructions, please provide feedback on the LaTeX section. Focus on:\n- Adherence to the plan's structure and content.\n- Clarity, coherence, and academic rigor.\n- Suggestions for improvement or expansion.\n- Identification of areas where citations might be needed.\n\nProvide your feedback in a clear, concise, and actionable Markdown format.`;
 
 		vscode.window.showInformationMessage('Sending section to Gemini for review...');
 
@@ -144,7 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(checkSectionDisposable);
 
-	const findCitationsDisposable = vscode.commands.registerCommand('co-pilot.findRelevantCitations', async () => {
+	const findCitationsDisposable = vscode.commands.registerCommand('co-edit.findRelevantCitations', async () => {
 		vscode.window.showInformationMessage('Find Relevant Citations command executed!');
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
@@ -225,7 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(findCitationsDisposable);
 
-	const improveParagraphDisposable = vscode.commands.registerCommand('co-pilot.improveParagraph', async () => {
+	const improveParagraphDisposable = vscode.commands.registerCommand('co-edit.improveParagraph', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			vscode.window.showErrorMessage('No active editor found.');
@@ -265,7 +265,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(improveParagraphDisposable);
 
-	const setApiKeyDisposable = vscode.commands.registerCommand('co-pilot.setGeminiApiKey', async () => {
+	const setApiKeyDisposable = vscode.commands.registerCommand('co-edit.setGeminiApiKey', async () => {
 		const apiKey = await vscode.window.showInputBox({
 			prompt: 'Enter your Gemini API Key:',
 			ignoreFocusOut: true, // Keep the input box open even if focus is lost

@@ -5,7 +5,7 @@ export async function generateContent(secretStorage: vscode.SecretStorage, promp
     const apiKey = await secretStorage.get('geminiApiKey');
 
     if (!apiKey) {
-        vscode.window.showErrorMessage('Gemini API Key not found. Please set it using the "Co-Pilot: Set Gemini API Key" command.');
+        vscode.window.showErrorMessage('Gemini API Key not found. Please set it using the "Co-Edit: Set Gemini API Key" command.');
         return undefined;
     }
 
