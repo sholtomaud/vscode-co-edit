@@ -99,6 +99,26 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		vscode.window.showInformationMessage(`Extracted section content (first 100 chars): ${sectionContent.substring(0, 100)}...`);
+
+		const chapterDirectory = path.dirname(document.fileName);
+		const planFilePath = path.join(chapterDirectory, 'plan.md');
+		const chapterGeminiFilePath = path.join(chapterDirectory, 'GEMINI.md');
+
+		let planContent = '';
+		try {
+			planContent = await fs.promises.readFile(planFilePath, 'utf8');
+			vscode.window.showInformationMessage(`Read plan.md from: ${planFilePath}`);
+		} catch (error) {
+			vscode.window.showWarningMessage(`Could not read plan.md: ${error.message}`);
+		}
+
+		let chapterGeminiContent = '';
+		try {
+			chapterGeminiContent = await fs.promises.readFile(chapterGeminiFilePath, 'utf8');
+			vscode.window.showInformationMessage(`Read chapter GEMINI.md from: ${chapterGeminiFilePath}`);
+		} catch (error) {
+			vscode.window.showWarningMessage(`Could not read chapter GEMINI.md: ${error.message}`);
+		}
 	});
 
 	context.subscriptions.push(checkSectionDisposable);
