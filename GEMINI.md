@@ -70,6 +70,7 @@ This section outlines the expected Git workflow for all development tasks, empha
 ### 4.2. Local Verification
 - Before committing any changes, ensure all local tests pass by running `npm test`.
 - All code must adhere to the project's linting and formatting rules. Run `npm run lint` and `npm run format` and address any reported issues.
+- **Continuous Integration Alignment**: The local test suite (`npm test`, `npm run lint`, `npm run format`) must mirror the checks performed by the project's Continuous Integration (CI) pipeline (e.g., GitHub Actions). Before pushing a feature branch, Gemini will verify that a CI pipeline exists and is configured to run these same checks. This ensures that code passing locally will also pass CI, preventing unnecessary PR failures.
 
 ### 4.3. Branching Strategy
 - All new work must be done on a dedicated feature branch.
@@ -86,6 +87,9 @@ This section outlines the expected Git workflow for all development tasks, empha
 - PRs should have a clear title and description, referencing the GitHub Issue they address.
 - Automated tests (e.g., via GitHub Actions) will run on PRs to ensure code quality and functionality.
 - A PR must be reviewed and approved by at least one other developer before it can be merged.
+- **Reviewer Comments:** Periodically check for reviewer comments on open Pull Requests. If comments are present, address them by updating the code and pushing new commits to the branch.
+- **Merged PRs:** If a Pull Request has been merged, consider the task complete and proceed to the next task in the `PROJECT_PLAN.md`.
+
 
 ### 4.6. Remote Synchronization
 - After completing a task, committing changes locally, and ensuring local verification passes, push the feature branch to the remote GitHub repository.
