@@ -14,8 +14,14 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	const disposable = vscode.commands.registerCommand('co-pilot.draftChapterPlan', () => {
-		// The code you place here will be executed every time your command is executed
-		vscode.window.showInformationMessage('Draft Chapter Plan command executed!');
+		const editor = vscode.window.activeTextEditor;
+		if (editor) {
+			const document = editor.document;
+			const directory = path.dirname(document.fileName);
+			vscode.window.showInformationMessage(`The active chapter directory is: ${directory}`);
+		} else {
+			vscode.window.showErrorMessage('No active editor found.');
+		}
 	});
 
 	context.subscriptions.push(disposable);
