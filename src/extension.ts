@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { exec } from 'child_process';
+import { generateContent } from './gemini';
 import * as fs from 'fs';
 import * as os from 'os';
 import { callZoteroApi } from './zotero';
@@ -31,18 +31,16 @@ export function activate(context: vscode.ExtensionContext) {
 			if (chapterTopic) {
 				const prompt = `Generate a detailed chapter plan in Markdown for the topic: "${chapterTopic}". Include sections, subsections, and key points.`;
 				
-				vscode.window.showInformationMessage('Generating chapter plan...');
+				            vscode.window.showInformationMessage('Generating chapter plan...');
 
-				exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
-					if (error) {
-						vscode.window.showErrorMessage(`Error generating plan: ${error.message}`);
-						return;
-					}
-					if (stderr) {
-						console.error(`Gemini CLI stderr: ${stderr}`);
-					}
-					            vscode.window.showInformationMessage(`Generated plan: ${stdout}`);
-				});
+            const generatedPlan = await generateContent(prompt);
+
+            if (generatedPlan) {
+                vscode.window.showInformationMessage(`Generated plan: ${generatedPlan.substring(0, 100)}...`);
+                // The next task (2.5) will handle writing this to file
+            } else {
+                vscode.window.showErrorMessage('Failed to generate chapter plan.');
+            }
 			} else {
 				vscode.window.showInformationMessage('Chapter plan generation cancelled.');
 			}
