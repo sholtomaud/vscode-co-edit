@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
 					if (stderr) {
 						console.error(`Gemini CLI stderr: ${stderr}`);
 					}
-					vscode.window.showInformationMessage(`Generated plan: ${stdout}`);
+					            vscode.window.showInformationMessage(`Generated plan: ${stdout}`);
 				});
 			} else {
 				vscode.window.showInformationMessage('Chapter plan generation cancelled.');
