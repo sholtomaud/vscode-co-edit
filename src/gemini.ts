@@ -10,7 +10,7 @@ export async function generateContent(secretStorage: vscode.SecretStorage, promp
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+    const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro"});
 
     try {
         const result = await model.generateContent(prompt);
