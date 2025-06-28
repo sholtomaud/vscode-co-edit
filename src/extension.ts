@@ -98,27 +98,28 @@ export function activate(context: vscode.ExtensionContext) {
 			sectionContent = document.getText(range);
 		}
 
-		vscode.window.showInformationMessage(`Extracted section content (first 100 chars): ${sectionContent.substring(0, 100)}...`);
+		        let chapterGeminiContent = '';
+        try {
+            chapterGeminiContent = await fs.promises.readFile(chapterGeminiFilePath, 'utf8');
+            vscode.window.showInformationMessage(`Read chapter GEMINI.md from: ${chapterGeminiFilePath}`);
+        } catch (error) {
+            vscode.window.showWarningMessage(`Could not read chapter GEMINI.md: ${error.message}`);
+        }
 
-		const chapterDirectory = path.dirname(document.fileName);
-		const planFilePath = path.join(chapterDirectory, 'plan.md');
-		const chapterGeminiFilePath = path.join(chapterDirectory, 'GEMINI.md');
+        const prompt = `You are an AI academic writing co-pilot. Your task is to review a LaTeX section against a provided plan and specific instructions.\n\nChapter Plan (from plan.md):\n\`\`\`markdown\n${planContent}\n\`\`\`\n\nChapter-Specific Instructions (from GEMINI.md, if any):\n\`\`\`markdown\n${chapterGeminiContent || 'No specific instructions provided.'}\n\`\`\`\n\nLaTeX Section to Review:\n\`\`\`latex\n${sectionContent}\n\`\`\`\n\nBased on the chapter plan and any specific instructions, please provide feedback on the LaTeX section. Focus on:\n- Adherence to the plan's structure and content.\n- Clarity, coherence, and academic rigor.\n- Suggestions for improvement or expansion.\n- Identification of areas where citations might be needed.\n\nProvide your feedback in a clear, concise, and actionable Markdown format.`;
 
-		let planContent = '';
-		try {
-			planContent = await fs.promises.readFile(planFilePath, 'utf8');
-			vscode.window.showInformationMessage(`Read plan.md from: ${planFilePath}`);
-		} catch (error) {
-			vscode.window.showWarningMessage(`Could not read plan.md: ${error.message}`);
-		}
+        vscode.window.showInformationMessage('Sending section to Gemini for review...');
 
-		let chapterGeminiContent = '';
-		try {
-			chapterGeminiContent = await fs.promises.readFile(chapterGeminiFilePath, 'utf8');
-			vscode.window.showInformationMessage(`Read chapter GEMINI.md from: ${chapterGeminiFilePath}`);
-		} catch (error) {
-			vscode.window.showWarningMessage(`Could not read chapter GEMINI.md: ${error.message}`);
-		}
+        exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
+            if (error) {
+                vscode.window.showErrorMessage(`Error reviewing section: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`Gemini CLI stderr: ${stderr}`);
+            }
+            vscode.window.showInformationMessage(`Gemini review complete. Output: ${stdout.substring(0, 100)}...`);
+        });
 	});
 
 	context.subscriptions.push(checkSectionDisposable);
