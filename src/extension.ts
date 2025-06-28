@@ -231,7 +231,22 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const selectedText = editor.document.getText(selection);
-		vscode.window.showInformationMessage(`Selected text (first 100 chars): ${selectedText.substring(0, 100)}...`);
+
+        const prompt = `Improve the following paragraph for clarity, conciseness, and academic rigor. Provide only the improved paragraph, without any additional text or formatting.\n\nParagraph:\n```\n${selectedText}\n````;
+
+        vscode.window.showInformationMessage('Sending paragraph to Gemini for improvement...');
+
+        exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
+            if (error) {
+                vscode.window.showErrorMessage(`Error improving paragraph: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`Gemini CLI stderr: ${stderr}`);
+            }
+            vscode.window.showInformationMessage(`Improved paragraph: ${stdout.substring(0, 100)}...`);
+            // The next task (5.4) will handle displaying the diff
+        });
 	});
 
 	context.subscriptions.push(improveParagraphDisposable);
