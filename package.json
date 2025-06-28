@@ -1,7 +1,6 @@
 {
-  "name": "co-edit",
   "extensionId": "co-edit",
-  "displayName": "Co-Edit",
+  "displayName": "vscode-co-edit",
   "description": "An AI academic writing co-pilot for VSCode.",
   "version": "0.0.1",
   "engines": {
@@ -53,7 +52,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint && npx vsce package --no-dependencies",
+    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "format": "prettier --write src/**/*.ts",
     "test": "vscode-test"
@@ -68,8 +67,7 @@
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.30.0",
     "prettier": "^3.6.2",
-    "typescript": "^5.8.3",
-    "vsce": "^2.15.0"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1"
