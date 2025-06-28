@@ -24,7 +24,20 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 
 			if (chapterTopic) {
-				vscode.window.showInformationMessage(`Chapter topic: ${chapterTopic}`);
+				const prompt = `Generate a detailed chapter plan in Markdown for the topic: "${chapterTopic}". Include sections, subsections, and key points.`;
+				
+				vscode.window.showInformationMessage('Generating chapter plan...');
+
+				exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
+					if (error) {
+						vscode.window.showErrorMessage(`Error generating plan: ${error.message}`);
+						return;
+					}
+					if (stderr) {
+						console.error(`Gemini CLI stderr: ${stderr}`);
+					}
+					vscode.window.showInformationMessage(`Generated plan: ${stdout}`);
+				});
 			} else {
 				vscode.window.showInformationMessage('Chapter plan generation cancelled.');
 			}
