@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as vscode from 'vscode';
 
-export async function generateContent(prompt: string): Promise<string | undefined> {
-    const apiKey = await vscode.secrets.get('geminiApiKey');
+export async function generateContent(secretStorage: vscode.SecretStorage, prompt: string): Promise<string | undefined> {
+    const apiKey = await secretStorage.get('geminiApiKey');
 
     if (!apiKey) {
         vscode.window.showErrorMessage('Gemini API Key not found. Please set it using the "Co-Pilot: Set Gemini API Key" command.');
