@@ -20,19 +20,19 @@
     "commands": [
       {
         "command": "co-edit.draftChapterPlan",
-        "title": "Co-Pilot: Draft Chapter Plan"
+        "title": "Co-Edit: Draft Chapter Plan"
       },
       {
         "command": "co-edit.improveParagraph",
-        "title": "Co-Pilot: Improve Paragraph"
+        "title": "Co-Edit: Improve Paragraph"
       },
       {
         "command": "co-edit.setGeminiApiKey",
-        "title": "Co-Pilot: Set Gemini API Key"
+        "title": "Co-Edit: Set Gemini API Key"
       }
     ],
     "configuration": {
-      "title": "Co-Pilot Configuration",
+      "title": "Co-Edit Configuration",
       "properties": {
         "co-edit.zotero.endpoint": {
           "type": "string",

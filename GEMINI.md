@@ -116,6 +116,17 @@ This section outlines the expected Git workflow for all development tasks, empha
         - Delete your local feature branch: `git branch -d <merged-branch-name>`
         - Delete the remote feature branch: `git push origin --delete <merged-branch-name>`
 
+### 4.7. Issue Resolution Workflow
+When addressing an issue (bug, improvement, refactor, etc.) identified by Gemini or the user:
+1.  **Create GitHub Issue**: If not already created, open a new GitHub issue for the problem.
+2.  **Add to TODO.md**: Add a corresponding entry to `TODO.md` with the GitHub issue number and appropriate tag (e.g., `[BUG]`, `[IMPROVEMENT]`).
+3.  **Create Feature Branch**: Create a new branch from `main` using the convention `fix/issue-XXX-short-description` or `feat/issue-XXX-short-description`.
+4.  **Implement Solution**: Work on the issue within this branch.
+5.  **Commit Changes**: Commit changes following the Conventional Commits specification, including `(closes #<issue_number>)` in the message.
+6.  **Open Pull Request**: Open a PR to merge the feature branch into `main`.
+7.  **Review and Merge**: Address reviewer comments, and merge the PR once approved.
+8.  **Clean Up**: Delete the local and remote feature branches after merging.
+
 ## 5. Model Context Protocol (MCP) Implementation
 
 - The primary purpose of this extension is to expose workspace context to a language model.
@@ -127,12 +138,14 @@ This section outlines the expected Git workflow for all development tasks, empha
     - Information about the version control system (if available).
 - The gathered information must be structured into a clear, serializable JSON object to be returned as the result of the command invocation.
 
-## 6. Continuous Improvement of GEMINI.md
+## 6. Continuous Improvement of GEMINI.md and Issue Management
 
 The `GEMINI.md` is a living document designed to evolve with our project and best practices.
 
-- **Self-Correction**: If Gemini encounters a workflow issue, a lack of clarity in instructions, or identifies a more efficient or robust way to perform a task, it will:
-    1.  Propose the improvement to the user.
-    2.  Upon user approval, update the `GEMINI.md` file to incorporate the new best practice or clarification.
-    3.  Implement this update following the standard Git workflow (new branch, commit, PR).
-- **Proactive Enhancement**: Gemini will also proactively suggest improvements to the `GEMINI.md` (e.g., regarding task management, code standards, or project structure) if it identifies areas for optimization or better documentation.
+- **Self-Correction and Issue Handling**: If Gemini encounters a workflow issue, a bug, a lack of clarity in instructions, or identifies a more efficient or robust way to perform a task, it will:
+    1.  **Create GitHub Issue**: Open a new GitHub issue describing the problem or proposed improvement.
+    2.  **Add to TODO.md**: Add an entry to the local `TODO.md` file, referencing the GitHub issue number and tagging it appropriately (e.g., `[BUG]`, `[IMPROVEMENT]`, `[REFACTOR]`).
+    3.  **Create Feature Branch**: Create a new Git branch from `main` for the issue, following the naming convention (e.g., `fix/issue-XXX-short-description` or `feat/issue-XXX-short-description`).
+    4.  **Implement Solution**: Work on the issue to complete the fix or implement the improvement.
+    5.  **Update GEMINI.md (if applicable)**: Upon user approval, update the `GEMINI.md` file to incorporate the new best practice or clarification, following the standard Git workflow (new branch, commit, PR).
+- **Proactive Enhancement**: Gemini will also proactively suggest improvements to the `GEMINI.md` (e.g., regarding task management, code standards, or project structure) if it identifies areas for optimization or better documentation. These will also follow the issue handling workflow described above.
