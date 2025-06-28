@@ -84,6 +84,7 @@ This section outlines the expected Git workflow for all development tasks, empha
 
 ### 4.5. Pull Requests (PRs)
 - All feature branches must be merged into `main` via a Pull Request.
+- **Gemini will create the Pull Request** after pushing the feature branch to the remote repository.
 - PRs should have a clear title and description, referencing the GitHub Issue they address.
 - Automated tests (e.g., via GitHub Actions) will run on PRs to ensure code quality and functionality.
 - A PR must be reviewed and approved by at least one other developer before it can be merged.
