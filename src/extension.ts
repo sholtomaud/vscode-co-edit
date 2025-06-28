@@ -195,7 +195,14 @@ export function activate(context: vscode.ExtensionContext) {
 
                     if (selectedItem) {
                         vscode.window.showInformationMessage(`Selected: ${selectedItem.label}`);
-                        // The next task (4.6) will handle inserting the citation
+                        const citationKey = selectedItem.item.citationKey; // Assuming citationKey exists
+                        const citationText = `\cite{${citationKey}}`;
+
+                        editor.edit(editBuilder => {
+                            editBuilder.replace(editor.selection, citationText);
+                        });
+
+                        vscode.window.showInformationMessage(`Inserted citation: ${citationText}`);
                     } else {
                         vscode.window.showInformationMessage('No citation selected.');
                     }
