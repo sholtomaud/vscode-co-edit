@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { exec } from 'child_process';
 import * as fs from 'fs';
+import { callZoteroApi } from './zotero';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -168,7 +169,25 @@ export function activate(context: vscode.ExtensionContext) {
 			if (stderr) {
 				console.error(`Gemini CLI stderr: ${stderr}`);
 			}
-			vscode.window.showInformationMessage(`Extracted keywords: ${stdout}`);
+			            const keywords = stdout.trim();
+            if (!keywords) {
+                vscode.window.showInformationMessage('Gemini did not return any keywords.');
+                return;
+            }
+
+            vscode.window.showInformationMessage(`Searching Zotero for: ${keywords}`);
+
+            try {
+                const zoteroResults = await callZoteroApi('item.search', [keywords]);
+                if (zoteroResults && zoteroResults.length > 0) {
+                    vscode.window.showInformationMessage(`Found ${zoteroResults.length} results in Zotero.`);
+                    // TODO: Display results in Quick Pick (Task 4.5)
+                } else {
+                    vscode.window.showInformationMessage('No relevant citations found in Zotero.');
+                }
+            } catch (zoteroError: any) {
+                vscode.window.showErrorMessage(`Zotero search failed: ${zoteroError.message}`);
+            }
 		});
 	});
 
