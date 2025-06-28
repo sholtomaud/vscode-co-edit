@@ -2,10 +2,14 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { exec } from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
+import { generateContent } from './gemini';
 import { callZoteroApi } from './zotero';
+
+interface ZoteroQuickPickItem extends vscode.QuickPickItem {
+    item: any; // To store the full Zotero item
+}
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -18,42 +22,46 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('co-pilot.draftChapterPlan', () => {
+	const draftChapterPlanDisposable = vscode.commands.registerCommand('co-pilot.draftChapterPlan', async () => {
 		const editor = vscode.window.activeTextEditor;
-		if (editor) {
-			const document = editor.document;
-			const directory = path.dirname(document.fileName);
-			const chapterTopic = await vscode.window.showInputBox({
-				prompt: 'Enter the main topic of this chapter:',
-				placeHolder: 'e.g., The impact of the printing press on Renaissance art'
-			});
-
-			if (chapterTopic) {
-				const prompt = `Generate a detailed chapter plan in Markdown for the topic: "${chapterTopic}". Include sections, subsections, and key points.`;
-				
-				vscode.window.showInformationMessage('Generating chapter plan...');
-
-				exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
-					if (error) {
-						vscode.window.showErrorMessage(`Error generating plan: ${error.message}`);
-						return;
-					}
-					if (stderr) {
-						console.error(`Gemini CLI stderr: ${stderr}`);
-					}
-					            vscode.window.showInformationMessage(`Generated plan: ${stdout}`);
-				});
-			} else {
-				vscode.window.showInformationMessage('Chapter plan generation cancelled.');
-			}
-		} else {
+		if (!editor) {
 			vscode.window.showErrorMessage('No active editor found.');
+			return;
+		}
+
+		const document = editor.document;
+		const directory = path.dirname(document.fileName);
+		const chapterTopic = await vscode.window.showInputBox({
+			prompt: 'Enter the main topic of this chapter:',
+			placeHolder: 'e.g., The impact of the printing press on Renaissance art'
+		});
+
+		if (chapterTopic) {
+			const prompt = `Generate a detailed chapter plan in Markdown for the topic: "${chapterTopic}". Include sections, subsections, and key points.`;
+			
+			vscode.window.showInformationMessage('Generating chapter plan...');
+
+            const generatedPlan = await generateContent(context.secrets, prompt);
+
+            if (generatedPlan) {
+                const planFilePath = path.join(directory, 'plan.md');
+                try {
+                    await fs.promises.writeFile(planFilePath, generatedPlan, 'utf8');
+                    vscode.window.showInformationMessage(`Chapter plan generated and saved to ${planFilePath}`);
+                } catch (err: any) {
+                    vscode.window.showErrorMessage(`Error writing plan.md: ${err.message}`);
+                }
+            } else {
+                vscode.window.showErrorMessage('Failed to generate chapter plan.');
+            }
+		} else {
+			vscode.window.showInformationMessage('Chapter plan generation cancelled.');
 		}
 	});
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(draftChapterPlanDisposable);
 
-	const checkSectionDisposable = vscode.commands.registerCommand('co-pilot.checkSectionAgainstPlan', () => {
+	const checkSectionDisposable = vscode.commands.registerCommand('co-pilot.checkSectionAgainstPlan', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			vscode.window.showErrorMessage('No active editor found.');
@@ -100,31 +108,38 @@ export function activate(context: vscode.ExtensionContext) {
 			sectionContent = document.getText(range);
 		}
 
-		        let chapterGeminiContent = '';
-        try {
-            chapterGeminiContent = await fs.promises.readFile(chapterGeminiFilePath, 'utf8');
-            vscode.window.showInformationMessage(`Read chapter GEMINI.md from: ${chapterGeminiFilePath}`);
-        } catch (error) {
-            vscode.window.showWarningMessage(`Could not read chapter GEMINI.md: ${error.message}`);
-        }
+		const chapterDirectory = path.dirname(document.fileName);
+		const planFilePath = path.join(chapterDirectory, 'plan.md');
+		const chapterGeminiFilePath = path.join(chapterDirectory, 'GEMINI.md');
 
-        const prompt = `You are an AI academic writing co-pilot. Your task is to review a LaTeX section against a provided plan and specific instructions.\n\nChapter Plan (from plan.md):\n\`\`\`markdown\n${planContent}\n\`\`\`\n\nChapter-Specific Instructions (from GEMINI.md, if any):\n\`\`\`markdown\n${chapterGeminiContent || 'No specific instructions provided.'}\n\`\`\`\n\nLaTeX Section to Review:\n\`\`\`latex\n${sectionContent}\n\`\`\`\n\nBased on the chapter plan and any specific instructions, please provide feedback on the LaTeX section. Focus on:\n- Adherence to the plan's structure and content.\n- Clarity, coherence, and academic rigor.\n- Suggestions for improvement or expansion.\n- Identification of areas where citations might be needed.\n\nProvide your feedback in a clear, concise, and actionable Markdown format.`;
+		let planContent = '';
+		try {
+			planContent = await fs.promises.readFile(planFilePath, 'utf8');
+		} catch (error: any) {
+			vscode.window.showWarningMessage(`Could not read plan.md: ${error.message}`);
+		}
 
-        vscode.window.showInformationMessage('Sending section to Gemini for review...');
+		let chapterGeminiContent = '';
+		try {
+			chapterGeminiContent = await fs.promises.readFile(chapterGeminiFilePath, 'utf8');
+		} catch (error: any) {
+			vscode.window.showWarningMessage(`Could not read chapter GEMINI.md: ${error.message}`);
+		}
 
-        exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
-            if (error) {
-                vscode.window.showErrorMessage(`Error reviewing section: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`Gemini CLI stderr: ${stderr}`);
-            }
+		const prompt = `You are an AI academic writing co-pilot. Your task is to review a LaTeX section against a provided plan and specific instructions.\n\nChapter Plan (from plan.md):\n\`\`\`markdown\n${planContent}\n\`\`\`\n\nChapter-Specific Instructions (from GEMINI.md, if any):\n\`\`\`markdown\n${chapterGeminiContent || 'No specific instructions provided.'}\n\`\`\`\n\nLaTeX Section to Review:\n\`\`\`latex\n${sectionContent}\n\`\`\`\n\nBased on the chapter plan and any specific instructions, please provide feedback on the LaTeX section. Focus on:\n- Adherence to the plan's structure and content.\n- Clarity, coherence, and academic rigor.\n- Suggestions for improvement or expansion.\n- Identification of areas where citations might be needed.\n\nProvide your feedback in a clear, concise, and actionable Markdown format.`;
+
+		vscode.window.showInformationMessage('Sending section to Gemini for review...');
+
+        const reviewOutput = await generateContent(context.secrets, prompt);
+
+        if (reviewOutput) {
             vscode.window.showInformationMessage(`Gemini review complete. Check output for full feedback.`);
             const outputChannel = vscode.window.createOutputChannel("Co-Pilot Gemini Review");
-            outputChannel.appendLine(stdout);
+            outputChannel.appendLine(reviewOutput);
             outputChannel.show();
-        });
+        } else {
+            vscode.window.showErrorMessage('Failed to get review from Gemini.');
+        }
 	});
 
 	context.subscriptions.push(checkSectionDisposable);
@@ -162,63 +177,55 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.window.showInformationMessage('Extracting keywords from paragraph...');
 
-		exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
-			if (error) {
-				vscode.window.showErrorMessage(`Error extracting keywords: ${error.message}`);
-				return;
-			}
-			if (stderr) {
-				console.error(`Gemini CLI stderr: ${stderr}`);
-			}
-			            const keywords = stdout.trim();
-            if (!keywords) {
-                vscode.window.showInformationMessage('Gemini did not return any keywords.');
-                return;
-            }
+        const keywords = await generateContent(context.secrets, prompt);
 
-            vscode.window.showInformationMessage(`Searching Zotero for: ${keywords}`);
+        if (!keywords) {
+            vscode.window.showInformationMessage('Gemini did not return any keywords.');
+            return;
+        }
 
-            try {
-                const zoteroResults = await callZoteroApi('item.search', [keywords]);
-                if (zoteroResults && zoteroResults.length > 0) {
-                    const quickPickItems = zoteroResults.map((item: any) => ({
-                        label: item.title || 'No Title',
-                        description: item.creators ? item.creators.map((c: any) => `${c.firstName} ${c.lastName}`).join(', ') : '',
-                        detail: item.date || '',
-                        item: item // Store the full item for later use
-                    }));
+        vscode.window.showInformationMessage(`Searching Zotero for: ${keywords}`);
 
-                    const selectedItem = await vscode.window.showQuickPick(quickPickItems, {
-                        placeHolder: 'Select a citation to insert',
-                        matchOnDescription: true,
-                        matchOnDetail: true
+        try {
+            const zoteroResults = await callZoteroApi('item.search', [keywords]);
+            if (zoteroResults && zoteroResults.length > 0) {
+                const quickPickItems: ZoteroQuickPickItem[] = zoteroResults.map((item: any) => ({
+                    label: item.title || 'No Title',
+                    description: item.creators ? item.creators.map((c: any) => `${c.firstName} ${c.lastName}`).join(', ') : '',
+                    detail: item.date || '',
+                    item: item // Store the full item for later use
+                }));
+
+                const selectedItem = await vscode.window.showQuickPick(quickPickItems, {
+                    placeHolder: 'Select a citation to insert',
+                    matchOnDescription: true,
+                    matchOnDetail: true
+                });
+
+                if (selectedItem) {
+                    vscode.window.showInformationMessage(`Selected: ${selectedItem.label}`);
+                    const citationKey = selectedItem.item.citationKey; // Assuming citationKey exists
+                    const citationText = `\\cite{${citationKey}}`;
+
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(editor.selection, citationText);
                     });
 
-                    if (selectedItem) {
-                        vscode.window.showInformationMessage(`Selected: ${selectedItem.label}`);
-                        const citationKey = selectedItem.item.citationKey; // Assuming citationKey exists
-                        const citationText = `\cite{${citationKey}}`;
-
-                        editor.edit(editBuilder => {
-                            editBuilder.replace(editor.selection, citationText);
-                        });
-
-                        vscode.window.showInformationMessage(`Inserted citation: ${citationText}`);
-                    } else {
-                        vscode.window.showInformationMessage('No citation selected.');
-                    }
+                    vscode.window.showInformationMessage(`Inserted citation: ${citationText}`);
                 } else {
-                    vscode.window.showInformationMessage('No relevant citations found in Zotero.');
+                    vscode.window.showInformationMessage('No citation selected.');
                 }
-            } catch (zoteroError: any) {
-                vscode.window.showErrorMessage(`Zotero search failed: ${zoteroError.message}`);
+            } else {
+                vscode.window.showInformationMessage('No relevant citations found in Zotero.');
             }
-		});
+        } catch (zoteroError: any) {
+            vscode.window.showErrorMessage(`Zotero search failed: ${zoteroError.message}`);
+        }
 	});
 
 	context.subscriptions.push(findCitationsDisposable);
 
-	const improveParagraphDisposable = vscode.commands.registerCommand('co-pilot.improveParagraph', () => {
+	const improveParagraphDisposable = vscode.commands.registerCommand('co-pilot.improveParagraph', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			vscode.window.showErrorMessage('No active editor found.');
@@ -233,36 +240,27 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const selectedText = editor.document.getText(selection);
 
-        const prompt = `Improve the following paragraph for clarity, conciseness, and academic rigor. Provide only the improved paragraph, without any additional text or formatting.\n\nParagraph:\n```\n${selectedText}\n````;
+        const prompt = `Improve the following paragraph for clarity, conciseness, and academic rigor. Provide only the improved paragraph, without any additional text or formatting.\n\nParagraph:\n\`\`\`\n${selectedText}\n\`\`\``;
 
         vscode.window.showInformationMessage('Sending paragraph to Gemini for improvement...');
 
-        exec(`gemini-cli generate --prompt "${prompt}"`, (error, stdout, stderr) => {
-            if (error) {
-                vscode.window.showErrorMessage(`Error improving paragraph: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`Gemini CLI stderr: ${stderr}`);
-            }
+        const improvedText = await generateContent(context.secrets, prompt);
 
-            const improvedText = stdout.trim();
+        if (!improvedText) {
+            vscode.window.showInformationMessage('Gemini did not return an improved paragraph.');
+            return;
+        }
 
-            if (!improvedText) {
-                vscode.window.showInformationMessage('Gemini did not return an improved paragraph.');
-                return;
-            }
+        // Create temporary files for diff view
+        const originalUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'original.txt')}`);
+        const improvedUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'improved.txt')}`);
 
-            // Create temporary files for diff view
-            const originalUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'original.txt')}`);
-            const improvedUri = vscode.Uri.parse(`untitled:${path.join(os.tmpdir(), 'improved.txt')}`);
+        await vscode.workspace.fs.writeFile(originalUri, Buffer.from(selectedText, 'utf8'));
+        await vscode.workspace.fs.writeFile(improvedUri, Buffer.from(improvedText, 'utf8'));
 
-            await vscode.workspace.fs.writeFile(originalUri, Buffer.from(selectedText, 'utf8'));
-            await vscode.workspace.fs.writeFile(improvedUri, Buffer.from(improvedText, 'utf8'));
+        await vscode.commands.executeCommand('vscode.diff', originalUri, improvedUri, 'Original vs. Improved Paragraph');
 
-            await vscode.commands.executeCommand('vscode.diff', originalUri, improvedUri, 'Original vs. Improved Paragraph');
-
-            vscode.window.showInformationMessage('Improved paragraph displayed in diff view.');
+        vscode.window.showInformationMessage('Improved paragraph displayed in diff view.');
 	});
 
 	context.subscriptions.push(improveParagraphDisposable);
@@ -284,16 +282,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(setApiKeyDisposable);
 }
-
-async function getGeminiApiKey(context: vscode.ExtensionContext): Promise<string | undefined> {
-	const apiKey = await context.secrets.get('geminiApiKey');
-	
-	if (!apiKey) {
-		vscode.window.showErrorMessage('Gemini API Key not found. Please set it using the "Co-Pilot: Set Gemini API Key" command.');
-	}
-	return apiKey;
-}
-
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
