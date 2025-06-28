@@ -18,7 +18,16 @@ export function activate(context: vscode.ExtensionContext) {
 		if (editor) {
 			const document = editor.document;
 			const directory = path.dirname(document.fileName);
-			vscode.window.showInformationMessage(`The active chapter directory is: ${directory}`);
+			const chapterTopic = await vscode.window.showInputBox({
+				prompt: 'Enter the main topic of this chapter:',
+				placeHolder: 'e.g., The impact of the printing press on Renaissance art'
+			});
+
+			if (chapterTopic) {
+				vscode.window.showInformationMessage(`Chapter topic: ${chapterTopic}`);
+			} else {
+				vscode.window.showInformationMessage('Chapter plan generation cancelled.');
+			}
 		} else {
 			vscode.window.showErrorMessage('No active editor found.');
 		}
