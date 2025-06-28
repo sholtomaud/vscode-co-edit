@@ -1,6 +1,6 @@
-# VSCode Co-Pilot Extension
+# VSCode Co-Edit Extension
 
-An AI academic writing co-pilot for VSCode, designed to assist authors in drafting, checking, and citing academic work, deeply integrated with Zotero.
+An AI academic writing co-edit for VSCode, designed to assist authors in drafting, checking, and citing academic work, deeply integrated with Zotero.
 
 ## Features
 
@@ -65,32 +65,32 @@ Your academic writing project should follow a structure similar to this:
 
 All commands can be accessed via the VSCode Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`).
 
--   **`Co-Pilot: Draft Chapter Plan`**
+-   **`Co-Edit: Draft Chapter Plan`**
     -   **Usage:** Open any `.tex` file within a chapter directory (e.g., `chapters/01-introduction/introduction.tex`). Run this command.
     -   **Prompt:** You will be asked to enter the main topic of your chapter.
     -   **Output:** A `plan.md` file will be generated in the same directory, outlining a detailed plan for your chapter.
 
--   **`Co-Pilot: Check Section Against Plan`**
+-   **`Co-Edit: Check Section Against Plan`**
     -   **Usage:** Place your cursor within a LaTeX section in your `.tex` file. Run this command.
     -   **Action:** The extension will extract the current section, read its `plan.md` and any `GEMINI.md` in the same directory, and send it to the Gemini CLI for review.
-    -   **Output:** Feedback from Gemini will appear in a new VSCode Output Channel named "Co-Pilot Gemini Review".
+    -   **Output:** Feedback from Gemini will appear in a new VSCode Output Channel named "Co-Edit Gemini Review".
 
--   **`Co-Pilot: Find Relevant Citations`**
+-   **`Co-Edit: Find Relevant Citations`**
     -   **Usage:** Place your cursor within a paragraph in your `.tex` file. Run this command.
     -   **Action:** The extension will extract the current paragraph, send it to the Gemini CLI for keyword extraction, and then search your Zotero library.
     -   **Output:** A Quick Pick list will appear with relevant citations from Zotero. Selecting one will insert its LaTeX citation key (`\cite{key}`) at your cursor.
 
--   **`Co-Pilot: Improve Paragraph`**
+-   **`Co-Edit: Improve Paragraph`**
     -   **Usage:** Select a paragraph in your `.tex` file. Run this command.
     -   **Action:** The selected text will be sent to the Gemini CLI for improvement.
     -   **Output:** A VSCode Diff view will open, showing your original paragraph and Gemini's improved version. You can then review and apply the changes.
 
 ## Configuration
 
-You can configure the extension settings in VSCode (`File > Preferences > Settings` or `Code > Preferences > Settings` on macOS) under `Extensions > Co-Pilot Configuration`.
+You can configure the extension settings in VSCode (`File > Preferences > Settings` or `Code > Preferences > Settings` on macOS) under `Extensions > Co-Edit Configuration`.
 
--   `co-pilot.zotero.endpoint`: The URL of your Zotero Better BibTeX JSON-RPC endpoint. (Default: `http://localhost:23119/better-bibtex/json-rpc`)
--   `co-pilot.zotero.citationStyle`: The default citation style to use for inserting citations (e.g., `apa`, `mla`, `chicago`). (Default: `apa`)
+-   `co-edit.zotero.endpoint`: The URL of your Zotero Better BibTeX JSON-RPC endpoint. (Default: `http://localhost:23119/better-bibtex/json-rpc`)
+-   `co-edit.zotero.citationStyle`: The default citation style to use for inserting citations (e.g., `apa`, `mla`, `chicago`). (Default: `apa`)
 
 ## Development
 

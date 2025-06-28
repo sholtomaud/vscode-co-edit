@@ -2,7 +2,7 @@
   "name": "co-edit",
   "publisher": "gemini",
   "displayName": "Co-Edit",
-  "description": "An AI academic writing co-pilot for VSCode.",
+  "description": "An AI academic writing co-edit for VSCode.",
   "version": "0.0.1",
   "repository": {
     "type": "git",
@@ -15,37 +15,37 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:co-pilot.draftChapterPlan",
-    "onCommand:co-pilot.checkSectionAgainstPlan",
-    "onCommand:co-pilot.findRelevantCitations",
-    "onCommand:co-pilot.improveParagraph",
-    "onCommand:co-pilot.setGeminiApiKey"
+    "onCommand:co-edit.draftChapterPlan",
+    "onCommand:co-edit.checkSectionAgainstPlan",
+    "onCommand:co-edit.findRelevantCitations",
+    "onCommand:co-edit.improveParagraph",
+    "onCommand:co-edit.setGeminiApiKey"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "co-pilot.draftChapterPlan",
+        "command": "co-edit.draftChapterPlan",
         "title": "Co-Pilot: Draft Chapter Plan"
       },
       {
-        "command": "co-pilot.improveParagraph",
+        "command": "co-edit.improveParagraph",
         "title": "Co-Pilot: Improve Paragraph"
       },
       {
-        "command": "co-pilot.setGeminiApiKey",
+        "command": "co-edit.setGeminiApiKey",
         "title": "Co-Pilot: Set Gemini API Key"
       }
     ],
     "configuration": {
       "title": "Co-Pilot Configuration",
       "properties": {
-        "co-pilot.zotero.endpoint": {
+        "co-edit.zotero.endpoint": {
           "type": "string",
           "default": "http://localhost:23119/better-bibtex/json-rpc",
           "description": "The URL of the Zotero Better BibTeX JSON-RPC endpoint."
         },
-        "co-pilot.zotero.citationStyle": {
+        "co-edit.zotero.citationStyle": {
           "type": "string",
           "default": "apa",
           "description": "The default citation style to use for inserting citations (e.g., 'apa', 'mla', 'chicago')."
