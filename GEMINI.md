@@ -84,7 +84,7 @@ This section outlines the expected Git workflow for all development tasks, empha
 
 ### 4.5. Pull Requests (PRs)
 - All feature branches must be merged into `main` via a Pull Request.
-- **Gemini will create the Pull Request** after pushing the feature branch to the remote repository.
+- **Gemini will create the Pull Request** after pushing the feature branch to the remote repository, utilizing the `gh cli`.
 - PRs should have a clear title and description, referencing the GitHub Issue they address.
 - Automated tests (e.g., via GitHub Actions) will run on PRs to ensure code quality and functionality.
 - A PR must be reviewed and approved by at least one other developer before it can be merged.
@@ -119,12 +119,12 @@ This section outlines the expected Git workflow for all development tasks, empha
 
 ### 4.7. Issue Resolution Workflow
 When addressing an issue (bug, improvement, refactor, etc.) identified by Gemini or the user:
-1.  **Create GitHub Issue**: If not already created, open a new GitHub issue for the problem.
+1.  **Create GitHub Issue**: If not already created, open a new GitHub issue for the problem using the `gh cli`.
 2.  **Add to TODO.md**: Add a corresponding entry to `TODO.md` with the GitHub issue number and appropriate tag (e.g., `[BUG]`, `[IMPROVEMENT]`).
 3.  **Create Feature Branch**: Create a new branch from `main` using the convention `fix/issue-XXX-short-description` or `feat/issue-XXX-short-description`.
 4.  **Implement Solution**: Work on the issue within this branch.
 5.  **Commit Changes**: Commit changes following the Conventional Commits specification, including `(closes #<issue_number>)` in the message.
-6.  **Open Pull Request**: Open a PR to merge the feature branch into `main`.
+6.  **Open Pull Request**: Open a PR to merge the feature branch into `main` using the `gh cli`.
 7.  **Review and Merge**: Address reviewer comments, and merge the PR once approved.
 8.  **Clean Up**: Delete the local and remote feature branches after merging.
 
