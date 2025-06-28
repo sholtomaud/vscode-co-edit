@@ -66,6 +66,7 @@ This section outlines the expected Git workflow for all development tasks, empha
 ### 4.1. Task Management
 - All development work must be tied to a GitHub Issue.
 - Issues will be created based on the `PROJECT_PLAN.md` file.
+- **Synchronization with `PROJECT_PLAN.md`**: The `PROJECT_PLAN.md` file serves as the single source of truth for all project tasks. After completing a task and closing its corresponding GitHub Issue, Gemini will ensure that the task is marked as complete (`[x]`) in `PROJECT_PLAN.md`. Duplicate or outdated entries in `PROJECT_PLAN.md` will be removed to maintain clarity and accuracy.
 
 ### 4.2. Local Verification
 - Before committing any changes, ensure all local tests pass by running `npm test`.
