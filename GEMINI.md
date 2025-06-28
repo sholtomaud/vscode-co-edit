@@ -13,13 +13,14 @@ This document outlines the core principles, constraints, and development workflo
 
 ### Dependency Management
 
-- **Allowed Libraries**: Only libraries published and approved by Microsoft are permitted. This primarily includes:
+- **Allowed Libraries**: Only libraries published and approved by Microsoft are permitted, with one explicit exception:
     - `vscode`: The core VSCode API module.
     - `@types/vscode`: TypeScript definitions for the VSCode API.
     - `@vscode/vsce`: For compiling and packaging the extension.
     - `@vscode/test-electron`: The official test runner for VSCode extensions.
+    - `@google/generative-ai`: The official Google Gemini SDK for Node.js. This is an exception to the Microsoft-only rule due to its core functionality for this extension.
 - **Native APIs**: Rely on native Node.js v20.x APIs for all file system operations, networking, and other core functionalities where the VSCode API is not suitable.
-- **No Third-Party Libraries**: Under no circumstances should any other third-party libraries or npm packages be introduced.
+- **Limited Third-Party Libraries**: Only the explicitly listed libraries above are permitted. Under no circumstances should any other third-party libraries or npm packages be introduced without explicit approval.
 
 ### Code Style & Conventions
 
