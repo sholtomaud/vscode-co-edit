@@ -266,7 +266,34 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(improveParagraphDisposable);
+
+	const setApiKeyDisposable = vscode.commands.registerCommand('co-pilot.setGeminiApiKey', async () => {
+		const apiKey = await vscode.window.showInputBox({
+			prompt: 'Enter your Gemini API Key:',
+			ignoreFocusOut: true, // Keep the input box open even if focus is lost
+			password: true // Mask the input
+		});
+
+		if (apiKey) {
+			await context.secrets.store('geminiApiKey', apiKey);
+			vscode.window.showInformationMessage('Gemini API Key stored securely.');
+		} else {
+			vscode.window.showInformationMessage('Gemini API Key not set.');
+		}
+	});
+
+	context.subscriptions.push(setApiKeyDisposable);
 }
+
+async function getGeminiApiKey(context: vscode.ExtensionContext): Promise<string | undefined> {
+	const apiKey = await context.secrets.get('geminiApiKey');
+	
+	if (!apiKey) {
+		vscode.window.showErrorMessage('Gemini API Key not found. Please set it using the "Co-Pilot: Set Gemini API Key" command.');
+	}
+	return apiKey;
+}
+
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
